@@ -4,7 +4,6 @@ using namespace std;
 
 struct Trie {
     bool isLeaf;
-    vector<int> v_index;
     set<int> v_set;
     unordered_map<char, Trie*> map;
 };
@@ -33,7 +32,6 @@ void insert(Trie*& root, const char* str, int index) {
     }
 
     curr->isLeaf = true;
-    curr->v_index.push_back(index);
     curr->v_set.insert(index);
 }
 

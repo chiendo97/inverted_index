@@ -1,25 +1,25 @@
+#include <codecvt>
+#include <locale>
 #include <bits/stdc++.h>
 
 using namespace std;
 
-int main() {
-    unordered_set<int> s1;
-    s1.insert(0);
-    s1.insert(1);
-    s1.insert(2);
-    unordered_set<int> s2;
-    s2.insert(1);
-    s2.insert(2);
-    unordered_set<int> s3;
+int main()
+{
+    string s = "LÊ TIẾN CHIẾN";
+    for(size_t i = 0; i < s.length();)
+    {
+        int cplen = 1;
+        if((s[i] & 0xf8) == 0xf0) cplen = 4;
+        else if((s[i] & 0xf0) == 0xe0) cplen = 3;
+        else if((s[i] & 0xe0) == 0xc0) cplen = 2;
+        if((i + cplen) > s.length()) cplen = 1;
 
-    set_intersection(s1.begin(), s1.end(), s2.begin(), s2.end(), inserter(s3, s3.begin()));
-
-    s1 = unordered_set<int>(s3);
-
-    for (int i: s1) {
-        cout << i << endl;
+        string res;
+        for (int j = 0; j < cplen; j++) {
+            res.push_back(s[i+j]);
+        }
+        cout << res << endl;
+        i += cplen;
     }
-
-    return 0;
 }
-
