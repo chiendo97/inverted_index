@@ -5,38 +5,38 @@
 
 using namespace std;
 
-vector<string> input(const char* file_name) {
+vector<string> strs;
+InvertedIndex idx = InvertedIndex();
+
+void input(const char* file_name) {
     ifstream cin(file_name);
-    vector<string> strs;
 
     string s;
+
     while (getline(cin, s)) {
         strs.push_back(s);
     }
-
-    return strs;
 }
 
-Trie* preprocessing_document(vector<string> strs) {
-
-    Trie* root = new Trie;
-    root = initializeTrie();
+void preprocessing_document() {
 
     for (int i = 0; i < strs.size(); i++) {
+
         string str = strs[i];
         vector<string> tokens = split_by_space(str);
 
         for (string token: tokens) {
+
             token = remove_vietnameses_tone(token);
             token = tolowercase(token);
-            insert(root, token.c_str(), i);
+
+            idx.insert(token.c_str(), i);
         }
     }
 
-    return root;
 }
 
-vector<string> query(Trie* root, vector<string> strs, string keyword) {
+vector<string> query(string keyword) {
 
     keyword = remove_vietnameses_tone(keyword);
     keyword = tolowercase(keyword);
@@ -47,9 +47,11 @@ vector<string> query(Trie* root, vector<string> strs, string keyword) {
 
     for (int i = 0; i < strs.size(); i++) result.insert(i);
     for (string token: query_tokens) {
-        set<int> result_token = search(root, token.c_str());
+
+        set<int> result_token = idx.search(token.c_str());
         set<int> combine_result;
         set_intersection(result.begin(), result.end(), result_token.begin(), result_token.end(), inserter(combine_result, combine_result.begin()));
+
         result = set<int>(combine_result);
     }
 
@@ -62,6 +64,32 @@ vector<string> query(Trie* root, vector<string> strs, string keyword) {
     return final_result;
 }
 
+void test_with_100_query() {
+
+    ifstream cin("100_query.txt");
+    freopen("100_query_result.txt", "w", stdout);
+
+    string s;
+    while (getline(cin, s)) {
+        vector<string> res = query(s);
+        cout << s << endl;
+        for (string re: res) cout << re << endl; 
+        cout << endl;
+    }
+}
+
+void custom_test() {
+
+    while (true) {
+        string keyword;
+        getline(cin, keyword);
+
+        vector<string> res = query(keyword);
+        for (string re: res) cout << re << endl;
+        cout << endl;
+    }
+}
+
 int main(int argc, char** argv) {
 
     clock_t tStart = clock();
@@ -70,25 +98,13 @@ int main(int argc, char** argv) {
 
     const char* file_name = argv[1];
     
-    vector<string> strs;
-    strs = input(file_name);
+    input(file_name);
 
     printf("Read document: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 
-    Trie* root = preprocessing_document(strs);
+    preprocessing_document();
 
     printf("Preprocessing document: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
-
-    ifstream cin("100_query.txt");
-    freopen("100_query_result.txt", "w", stdout);
-
-    string s;
-    while (getline(cin, s)) {
-        vector<string> res = query(root, strs, s);
-        cout << s << endl;
-        for (string re: res) cout << re << endl; 
-        cout << endl;
-    }
 
     return 0;
 }
