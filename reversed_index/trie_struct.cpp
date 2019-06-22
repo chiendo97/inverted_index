@@ -7,7 +7,6 @@ struct Trie {
 
     // v_set: what documents has this word
     set<int> v_set;
-
     unordered_map<char, Trie*> map;
 };
 

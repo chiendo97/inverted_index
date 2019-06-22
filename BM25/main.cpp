@@ -8,11 +8,15 @@ using namespace std;
 const double k = 1.2;
 const double b = 0.75;
 
+clock_t tStart = clock();
+
 vector<string> strs;
 DocumentLengthTable dlt;
 InvertedIndex idx;
 
 void input(const char* file_name) {
+    cout << "Staring read from file input! Estimate time: 1s" << endl;
+
     ifstream cin(file_name);
 
     string s;
@@ -22,6 +26,8 @@ void input(const char* file_name) {
 }
 
 void preprocessing_document() {
+    cout << "Staring preprocessing document! Estimate time: 20s" << endl;
+
 
     for (int i = 0; i < strs.size(); i++) {
         vector<string> tokens = split_by_space(strs[i]);
@@ -45,6 +51,8 @@ double score_BM25(double n, double f, double N, double dl, double avdl) {
 }
 
 vector<pair<string, double>> query(string keyword) {
+    cout << "Staring quering! Estimate time: 60s" << endl;
+
 
     keyword = remove_vietnameses_tone(keyword);
     keyword = tolowercase(keyword);
@@ -86,20 +94,8 @@ vector<pair<string, double>> query(string keyword) {
     return final_result;
 }
 
-int main(int argc, char** argv) {
-    clock_t tStart = clock();
-
-    if (argc == 1) { return 0; }
-
-    const char* file_name = argv[1];
-    
-    input(file_name);
-
-    printf("Read document: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
-
-    preprocessing_document();
-
-    printf("Preprocessing document: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+void custom_test() {
+    cout << "Staring read file query! Estimate time: 6000s" << endl;
 
     while (true) {
         cout << "query: ";
@@ -112,12 +108,48 @@ int main(int argc, char** argv) {
         for (auto p: test) {
             cout << p.first << ' ' << p.second << endl;
         }
-
-        printf("Calculation query BM25: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+        printf("Query done: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 
         cout << endl;
     }
 
+}
+
+void test_with_100_query() {
+
+    ifstream cin("100_query.txt");
+    freopen("100_query_result.txt", "w", stdout);
+
+    string s;
+    while (getline(cin, s)) {
+        vector<pair<string, double>> res = query(s);
+        cout << s << endl;
+        for (auto p: res) {
+            cout << p.first << ' ' << p.second << endl;
+        }
+        cout << endl;
+
+    }
+
+}
+
+int main(int argc, char** argv) {
+
+    if (argc == 1) { return 0; }
+
+    const char* file_name = argv[1];
+    
+    input(file_name);
+
+    printf("Read document done: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+
+    preprocessing_document();
+
+    printf("Preprocessing document done: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+
+    custom_test();
+
+    printf("Test done: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
     return 0;
 }
 
