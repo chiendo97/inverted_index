@@ -5,6 +5,8 @@
 
 using namespace std;
 
+clock_t tStart = clock();
+
 vector<string> strs;
 InvertedIndex idx = InvertedIndex();
 
@@ -93,16 +95,14 @@ void custom_test() {
         vector<string> res = query(keyword);
         for (string re: res) cout << re << endl;
         cout << endl;
+        printf("Query done: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
     }
 }
 
 int main(int argc, char** argv) {
 
-    clock_t tStart = clock();
-
-    if (argc == 1) 
-    { 
-        cout << "Argument missing. Exit!" << endl;
+    if (argc == 1) { 
+        cout << "Argument missing. Properly u missing product_names.txt . Exit!" << endl;
         return 0; 
     }
 
@@ -118,7 +118,6 @@ int main(int argc, char** argv) {
 
     custom_test();
 
-    printf("End of program: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
     return 0;
 }
 

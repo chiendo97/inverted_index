@@ -4,58 +4,46 @@ A C++ implementation of Reversed-index search engine and BM25 ranking function.
 
 # Implementation
 
-Trong mỗi thuật toán, tôi sử dụng 2 modules chính để xử lý: preprocessing_document và query. 
+In each implementation, there are 3 main modules to process: input, preprocessing_document and query function.
 
-- Hàm preprocessing_document sẽ đọc từ ```vector<string> strs``` để tiền xử lý dữ liệu và tạo thành một data structure.
-- Hàm query nhận vào một ```string keyword``` để query tìm kiếm và trả về ```vector<string> result``` hoặc ```vector<pair<string, double>> result``` chứa kết quả try vấn.
+- input function: read from product_names.txt into `vector<string> strs`
+- preprocessing_document function: from `vector<string> strs`, prepare data struct for quering.
+- query function: from data stucture created in preprocessing_document function, query is preformed.
 
-Ngoài ra ở mỗi chương trình đều có các biến toàn cục để chứa document và data stucture để hỗ trợ việc query.
-
-```
-vector<string> strs // chứa các document được đọc từ file input
-```
-
-Trong mỗi thuật toán, tôi sử dụng các cấu trúc dữ liệu khác nhau để triền khai và được trình bày dưới đây. 
-
+In each algorithm, I used different data structures to perform quering.
 
 ## Reversed-index
 
-## Trie 
+A [Trie](https://vnoi.info/wiki/algo/data-structures/trie), also called digital tree, radix tree or prefix tree, is a kind of search tree—an ordered tree data structure used to store a dynamic set or associative array where the keys are usually strings.
 
-[Trie](https://vnoi.info/wiki/algo/data-structures/trie) là một cấu trúc dữ liệu dùng để quản lý một tập hợp các xâu.
+In each node, there are 2 variables:
 
-Trong đó mỗi nhánh sẽ chứa 2 giá trị sau đây:
 ```
-// v_set: chứa các docid mà có xuất hiện của keyword
-set<int> v_set;
-// map: chứa các pointer dẫn đến các nút tiếp theo trong cây Trie
-unordered_map<char, Trie*> map;
+set<int> v_set; // contain every docid of document which contain keyword
+unordered_map<char, Trie*> map; // contain pointers to next node of a Trie tree
 ```
 
 ## BM25 ranking function
 
-Trong thuật toán sếp hạng BM25, tôi chỉ sử dụng các data struct của thư viện chuẩn trong C++ bao gồm: map, set, vector. Các cấu trúc được sử dụng kết hợp để tạo này 2 class với 2 mục đích khác nhau.
+I only used standard data structures of C++, which are: map, set and vector. They are used in order to create 2 classes with different purposes:
 
-- InvertedIndex: // tương tự Reversed-index
+- InvertedIndex: // similar to Reversed-index
 
-  - map<string, set<int>> nq; // có bao nhiêu document chứa keyword này
-  
-  - map<string, map<int, int>> fq; // mỗi document chứa bao nhiêu keyword
+  - `map<string, set<int>> nq; // a keyword mapping to a set contain every docid of document which contain this keyword`
+  - `map<string, map<int, int>> fq; // a keyword mapping to another map for every docid of document with how many time this keyword appear in this document`
 
-- DocumentLengthTable: // quản lý độ dài của mỗi document và độ dài document trung bình
-
-
+- DocumentLengthTable: // manager the length of each document which is how many words there are and the avg length of all documents.
 
 # How To Run
 
-Trong code, có 2 hàm để sử dụng: 
+Inside the code, there are 2 functions:
 
-- custom_test(): các query được nhập vào từ bàn phím 
-- test_with_100_query(): đọc các query từ file `100_query.txt` và chạy ra kết quả trong file `100_query_result.txt`
+- custom_test(): custom query input from console
+- test_with_100_query(): read query from the file `100_query.txt` and run query into file `100_query_result.txt`
 
-Hiện tại mặc định là chạy custom_test(). 
+Code default is custom_test()
 
-Bạn có thể sửa code thành hàm test_with_100_query() để chạy test với các query từ file.
+You can modify the code into test_with_100_query() for runing with 100_query.txt test.
 
 ## Reversed-index
 
@@ -73,19 +61,17 @@ g++ -std=c++17 main.cpp -o main && ./main product_names.txt
 
 # Evaluation
 
-Hiện tại thời gian trung bình của hàm preprocessing_document nằm ở 20-25s. 
+The estimate time of preprocessing_document function is 3-6s.
 
-Nguyên nhân là hàm `remove_vietnamese_tone` dùng để loại bỏ dấu tiếng việt chạy chưa được tối ưu. 
+### Reversed-index
 
+Each query last 1-2s to perform
 
-## Reversed-index
+Result doesn't estimate the relevance of documents to a given search query
 
-Mỗi query mất trung bình 1-2s.
-Do chỉ liệt kê ra các document có đẩy đủ các token từ keyword nên hàm query chạy khá nhanh. 
-Tuy nhiên các kết quả chưa thể hiện Sự liên quan giữa document và keyword. 
+### BM25 ranking function
 
-## BM25 ranking function
+Each query lasts 10-60s depends on how many words there are in keyword
 
-Mỗi query mất trung bình 50-60s do phải tính toán cho mỗi token trong keyword với các document mà nó có mặt. 
-Kết quả trả về thể hiện đầy đủ Sự liên quan được tính theo trọng số và cả những kết quả chỉ chứa một phần của keyword. 
+Result estimate the relevance of documents to a given search query
 

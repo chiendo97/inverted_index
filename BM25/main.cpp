@@ -95,7 +95,6 @@ vector<pair<string, double>> query(string keyword) {
 }
 
 void custom_test() {
-    cout << "Staring read file query! Estimate time: 6000s" << endl;
 
     while (true) {
         cout << "query: ";
@@ -105,9 +104,11 @@ void custom_test() {
 
         vector<pair<string, double>> test = query(keyword);
 
+        cout << setw(10) << "score_BM25" << setw(150) << "output_query" << endl << endl;
         for (auto p: test) {
-            cout << p.first << ' ' << p.second << endl;
+            cout << setw(10) << p.second << setw(150) << p.first << endl;
         }
+
         printf("Query done: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 
         cout << endl;
@@ -116,6 +117,7 @@ void custom_test() {
 }
 
 void test_with_100_query() {
+    cout << "Staring read and query file_query! Estimate time: 6000s" << endl;
 
     ifstream cin("100_query.txt");
     freopen("100_query_result.txt", "w", stdout);
