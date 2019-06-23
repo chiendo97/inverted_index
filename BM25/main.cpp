@@ -26,7 +26,7 @@ void input(const char* file_name) {
 }
 
 void preprocessing_document() {
-    cout << "Staring preprocessing document! Estimate time: 20s" << endl;
+    cout << "Staring preprocessing document! Estimate time: 6-7s" << endl;
 
 
     for (int i = 0; i < strs.size(); i++) {
@@ -51,7 +51,7 @@ double score_BM25(double n, double f, double N, double dl, double avdl) {
 }
 
 vector<pair<string, double>> query(string keyword) {
-    cout << "Staring quering! Estimate time: 60s" << endl;
+    cout << "Staring quering! Estimate time: 10-60s" << endl;
 
 
     keyword = remove_vietnameses_tone(keyword);

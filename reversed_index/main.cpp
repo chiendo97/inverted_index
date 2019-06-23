@@ -23,7 +23,7 @@ void input(const char* file_name) {
 }
 
 void preprocessing_document() {
-    cout << "Staring preprocessing document! Estimate time: 20s" << endl;
+    cout << "Staring preprocessing document! Estimate time: 4s" << endl;
 
     for (int i = 0; i < strs.size(); i++) {
 
